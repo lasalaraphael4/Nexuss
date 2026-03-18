@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXUS — Engineering Tomorrow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════
+   DESIGN SYSTEM
+═══════════════════════════════════ */
+:root {
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+}
+
+[data-theme="dark"] {
+  --bg: #080808;
+  --bg-2: #0f0f0f;
+  --bg-3: #161616;
+  --bg-4: #1e1e1e;
+  --border: rgba(255,255,255,0.08);
+  --border-strong: rgba(255,255,255,0.16);
+  --text: #f0f0f0;
+  --text-2: #a0a0a0;
+  --text-3: #606060;
+  --text-inv: #080808;
+  --accent: #e8e0d0;
+  --accent-2: #c8b99a;
+  --accent-glow: rgba(232, 224, 208, 0.12);
+  --accent-blue: #4a90e2;
+  --surface: #111111;
+  --surface-hover: #181818;
+  --hero-grad: radial-gradient(ellipse 100% 80% at 50% 20%, rgba(232,224,208,0.05) 0%, transparent 60%),
+               radial-gradient(ellipse 60% 60% at 80% 80%, rgba(74,144,226,0.04) 0%, transparent 50%);
+}
+
+[data-theme="light"] {
+  --bg: #fafafa;
+  --bg-2: #f4f4f4;
+  --bg-3: #eeeeee;
+  --bg-4: #e8e8e8;
+  --border: rgba(0,0,0,0.08);
+  --border-strong: rgba(0,0,0,0.16);
+  --text: #0a0a0a;
+  --text-2: #555555;
+  --text-3: #aaaaaa;
+  --text-inv: #fafafa;
+  --accent: #1a1a1a;
+  --accent-2: #444444;
+  --accent-glow: rgba(0,0,0,0.06);
+  --accent-blue: #2563eb;
+  --surface: #ffffff;
+  --surface-hover: #f5f5f5;
+  --hero-grad: radial-gradient(ellipse 100% 80% at 50% 20%, rgba(0,0,0,0.03) 0%, transparent 60%);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  overflow-x: hidden;
+  transition: background .4s var(--ease), color .4s var(--ease);
+  cursor: none;
+}
+
+/* CURSOR */
+.c-dot {
+  position: fixed; width: 8px; height: 8px;
+  background: var(--text); border-radius: 50%;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: transform .1s, width .3s var(--ease), height .3s var(--ease), background .3s;
+}
+.c-ring {
+  position: fixed; width: 32px; height: 32px;
+  border: 1px solid rgba(232,224,208,0.3);
+  border-radius: 50%;
+  pointer-events: none; z-index: 9998;
+  transform: translate(-50%,-50%);
+}
+[data-theme="light"] .c-ring { border-color: rgba(0,0,0,0.2); }
+body:has(a:hover) .c-dot, body:has(button:hover) .c-dot {
+  width: 14px; height: 14px;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border-strong); }
+
+/* ═══════════════════════════════════
+   NAV
+═══════════════════════════════════ */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 900;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 28px 56px;
+  transition: background .5s, padding .4s, border-color .5s;
+  border-bottom: 1px solid transparent;
+}
+nav.stuck {
+  padding: 18px 56px;
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  backdrop-filter: blur(24px) saturate(1.4);
+  border-color: var(--border);
+}
+.nav-logo {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.3rem; font-weight: 800;
+  letter-spacing: 0.25em;
+  color: var(--text);
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.nav-logo em { font-style: normal; color: var(--accent-2); }
+.nav-center {
+  display: flex; gap: 44px; list-style: none;
+  position: absolute; left: 50%; transform: translateX(-50%);
+}
+.nav-center a {
+  font-size: 0.72rem; font-weight: 500;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--text-2); text-decoration: none;
+  transition: color .3s;
+}
+.nav-center a:hover { color: var(--text); }
+.nav-right { display: flex; align-items: center; gap: 20px; }
+.theme-toggle {
+  width: 44px; height: 24px;
+  background: var(--bg-4); border: 1px solid var(--border-strong);
+  border-radius: 12px; cursor: none;
+  position: relative; transition: background .3s;
+  flex-shrink: 0;
+}
+.theme-toggle::after {
+  content: '';
+  position: absolute; top: 3px; left: 3px;
+  width: 16px; height: 16px;
+  background: var(--text);
+  border-radius: 50%;
+  transition: transform .3s var(--ease), background .3s;
+}
+[data-theme="light"] .theme-toggle::after { transform: translateX(20px); }
+.nav-btn {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem; font-weight: 500;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--text-inv); background: var(--text);
+  border: none; padding: 10px 24px;
+  cursor: none; transition: opacity .3s, transform .2s;
+  text-decoration: none; display: inline-block;
+}
+.nav-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+.nav-menu {
+  display: none;
+  background: none; border: none;
+  cursor: none; padding: 4px;
+  flex-direction: column; gap: 5px;
+}
+.nav-menu span {
+  display: block; width: 22px; height: 1.5px;
+  background: var(--text); transition: all .3s;
+}
+
+/* ═══════════════════════════════════
+   HERO
+═══════════════════════════════════ */
+#hero {
+  position: relative;
+  height: 100svh; min-height: 680px;
+  display: grid; place-items: center;
+  overflow: hidden;
+  background: var(--bg);
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background: var(--hero-grad);
+}
+.hero-particles {
+  position: absolute; inset: 0;
+  overflow: hidden;
+}
+.particle {
+  position: absolute;
+  width: 1px; height: 1px;
+  background: var(--accent);
+  border-radius: 50%;
+  opacity: 0;
+  animation: particleDrift var(--dur, 8s) var(--delay, 0s) ease-in-out infinite;
+}
+@keyframes particleDrift {
+  0% { opacity: 0; transform: translateY(0) translateX(0); }
+  20% { opacity: var(--op, 0.4); }
+  80% { opacity: var(--op, 0.4); }
+  100% { opacity: 0; transform: translateY(-120px) translateX(var(--dx, 20px)); }
+}
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 100px 100px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 10%, transparent 80%);
+  opacity: 0.5;
+}
+.hero-inner {
+  position: relative; z-index: 2;
+  text-align: center; max-width: 1100px;
+  padding: 0 32px;
+}
+.hero-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem; font-weight: 400;
+  letter-spacing: 0.35em; text-transform: uppercase;
+  color: var(--accent-2);
+  display: inline-flex; align-items: center; gap: 14px;
+  margin-bottom: 40px;
+  opacity: 0; animation: riseIn .9s .2s var(--ease) forwards;
+}
+.hero-eyebrow::before, .hero-eyebrow::after {
+  content: ''; width: 36px; height: 1px;
+  background: currentColor; opacity: 0.5;
+}
+.hero-h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(3.8rem, 8.5vw, 9.5rem);
+  font-weight: 400; line-height: 1.0;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  margin-bottom: 32px;
+  opacity: 0; animation: riseIn 1s .4s var(--ease) forwards;
+}
+.hero-h1 .italic { font-style: italic; color: var(--accent-2); }
+.hero-h1 .outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--text);
+  opacity: 0.35;
+}
+.hero-sub {
+  font-size: clamp(0.85rem, 1.4vw, 1rem);
+  font-weight: 400; letter-spacing: 0.12em;
+  color: var(--text-2); max-width: 520px; margin: 0 auto 52px;
+  line-height: 1.8; text-transform: uppercase;
+  opacity: 0; animation: riseIn .9s .65s var(--ease) forwards;
+}
+.hero-actions {
+  display: flex; align-items: center; justify-content: center;
+  gap: 16px; flex-wrap: wrap;
+  opacity: 0; animation: riseIn .9s .85s var(--ease) forwards;
+}
+.btn-hero-primary {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--text-inv); background: var(--text);
+  border: none; padding: 18px 52px; cursor: none;
+  transition: opacity .3s, transform .3s var(--ease);
+  text-decoration: none; display: inline-block; position: relative; overflow: hidden;
+}
+.btn-hero-primary:hover { opacity: 0.88; transform: translateY(-2px); }
+.btn-hero-ghost {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--text); background: transparent;
+  border: 1px solid var(--border-strong); padding: 18px 52px; cursor: none;
+  transition: border-color .3s, color .3s, background .3s;
+  text-decoration: none; display: inline-block;
+}
+.btn-hero-ghost:hover { border-color: var(--text); background: var(--accent-glow); }
+.hero-scroll-hint {
+  position: absolute; bottom: 40px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  opacity: 0; animation: fadeIn 1s 1.6s ease forwards;
+}
+.scroll-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem; letter-spacing: 0.3em;
+  text-transform: uppercase; color: var(--text-3);
+}
+.scroll-bar {
+  width: 1px; height: 48px;
+  background: linear-gradient(to bottom, var(--text-2), transparent);
+  animation: scrollDown 2.4s ease-in-out infinite;
+}
+@keyframes scrollDown {
+  0% { transform: scaleY(0); transform-origin: top; opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: scaleY(1); transform-origin: top; opacity: 0; }
+}
+.hero-stat-bar {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid var(--border);
+}
+.h-stat {
+  padding: 28px 40px; border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 6px;
+}
+.h-stat:last-child { border-right: none; }
+.h-stat-num {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2.2rem; color: var(--text);
+}
+.h-stat-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--text-3);
+}
+
+/* ═══════════════════════════════════
+   SHARED
+═══════════════════════════════════ */
+.section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem; letter-spacing: 0.3em;
+  text-transform: uppercase; color: var(--text-3);
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 20px;
+}
+.section-label::before { content: ''; width: 24px; height: 1px; background: var(--text-3); }
+.reveal {
+  opacity: 0; transform: translateY(36px);
+  transition: opacity .9s var(--ease), transform .9s var(--ease);
+}
+.reveal.visible { opacity: 1; transform: none; }
+.reveal-l {
+  opacity: 0; transform: translateX(-40px);
+  transition: opacity .9s var(--ease), transform .9s var(--ease);
+}
+.reveal-l.visible { opacity: 1; transform: none; }
+.reveal-r {
+  opacity: 0; transform: translateX(40px);
+  transition: opacity .9s var(--ease), transform .9s var(--ease);
+}
+.reveal-r.visible { opacity: 1; transform: none; }
+.delay-1 { transition-delay: .1s; }
+.delay-2 { transition-delay: .2s; }
+.delay-3 { transition-delay: .3s; }
+.delay-4 { transition-delay: .4s; }
+.delay-5 { transition-delay: .5s; }
+.w { max-width: 1200px; margin: 0 auto; padding: 0 56px; }
+
+/* ═══════════════════════════════════
+   ABOUT / MISSION
+═══════════════════════════════════ */
+#about {
+  padding: 160px 0; background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+.about-grid {
+  display: grid; grid-template-columns: 1fr 1.4fr;
+  gap: 100px; align-items: center;
+}
+.about-left .section-label { margin-bottom: 32px; }
+.about-kicker {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(2.6rem, 4vw, 4.5rem);
+  line-height: 1.12; letter-spacing: -0.02em;
+  color: var(--text); margin-bottom: 40px;
+}
+.about-kicker .it { font-style: italic; color: var(--accent-2); }
+.about-body {
+  font-size: 0.88rem; font-weight: 400;
+  line-height: 2; color: var(--text-2); margin-bottom: 16px;
+}
+.about-body strong { color: var(--text); font-weight: 600; }
+.about-link {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--text); text-decoration: none;
+  display: inline-flex; align-items: center; gap: 10px; margin-top: 20px;
+  border-bottom: 1px solid var(--border-strong); padding-bottom: 4px;
+  transition: gap .3s var(--ease), border-color .3s;
+}
+.about-link:hover { gap: 18px; border-color: var(--text); }
+.about-right {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+}
+.about-tile {
+  background: var(--bg-2); padding: 40px 32px;
+  border: 1px solid var(--border);
+  position: relative; overflow: hidden;
+  transition: background .3s;
+}
+.about-tile:hover { background: var(--bg-3); }
+.about-tile::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent-2), transparent);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .5s var(--ease);
+}
+.about-tile:hover::before { transform: scaleX(1); }
+.tile-num {
+  font-family: 'DM Serif Display', serif;
+  font-size: 3rem; color: var(--border-strong);
+  margin-bottom: 20px; display: block;
+}
+.tile-title {
+  font-size: 0.78rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text); margin-bottom: 10px;
+}
+.tile-desc {
+  font-size: 0.75rem; font-weight: 400;
+  line-height: 1.8; color: var(--text-2);
+}
+
+/* ═══════════════════════════════════
+   SERVICES / PRODUCTS
+═══════════════════════════════════ */
+#services {
+  padding: 160px 0;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+}
+.services-header {
+  display: flex; align-items: flex-end;
+  justify-content: space-between; margin-bottom: 80px;
+  flex-wrap: wrap; gap: 32px;
+}
+.services-h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(2.6rem, 4.5vw, 5rem);
+  font-weight: 400; line-height: 1.05;
+  letter-spacing: -0.02em; color: var(--text);
+}
+.services-h2 .it { font-style: italic; color: var(--accent-2); }
+.services-sub {
+  font-size: 0.82rem; font-weight: 400;
+  color: var(--text-2); line-height: 1.8;
+  max-width: 340px; text-align: right;
+}
+.services-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+}
+.service-card {
+  background: var(--surface); padding: 52px 40px;
+  border: 1px solid var(--border);
+  position: relative; overflow: hidden; cursor: none;
+  transition: background .4s var(--ease);
+  display: flex; flex-direction: column;
+}
+.service-card:hover { background: var(--surface-hover); }
+.service-card.featured {
+  background: var(--text);
+  grid-column: span 2;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
+  align-items: center;
+}
+.service-card.featured .s-title { color: var(--text-inv); }
+.service-card.featured .s-desc { color: color-mix(in srgb, var(--text-inv) 60%, transparent); }
+.service-card.featured .s-tag { color: color-mix(in srgb, var(--text-inv) 40%, transparent); border-color: color-mix(in srgb, var(--text-inv) 20%, transparent); }
+.service-card.featured .s-num { color: color-mix(in srgb, var(--text-inv) 15%, transparent); }
+.service-card.featured .s-link { color: var(--text-inv); border-color: color-mix(in srgb, var(--text-inv) 30%, transparent); }
+.service-card.featured .s-link:hover { border-color: var(--text-inv); }
+.s-num {
+  font-family: 'DM Serif Display', serif;
+  font-size: 4rem; color: var(--border);
+  line-height: 1; margin-bottom: 32px;
+  display: block;
+}
+.s-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--text-3); border: 1px solid var(--border);
+  padding: 4px 10px; display: inline-block; margin-bottom: 20px;
+}
+.s-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.5rem; font-weight: 700;
+  letter-spacing: -0.01em; color: var(--text);
+  margin-bottom: 16px; line-height: 1.2;
+}
+.s-desc {
+  font-size: 0.8rem; font-weight: 400;
+  line-height: 1.9; color: var(--text-2);
+  flex: 1;
+}
+.s-link {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--text); text-decoration: none;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 3px; margin-top: 32px;
+  display: inline-block; align-self: flex-start;
+  transition: border-color .3s, gap .3s;
+}
+.s-link:hover { border-color: var(--text); }
+.featured-visual {
+  height: 240px; background: var(--bg-3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 5rem; position: relative; overflow: hidden;
+}
+[data-theme="dark"] .featured-visual { background: rgba(255,255,255,0.05); }
+.featured-visual::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 50%, rgba(200,180,140,0.15), transparent 70%);
+}
+
+/* ═══════════════════════════════════
+   FEATURES
+═══════════════════════════════════ */
+#features {
+  padding: 160px 0; background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+.features-header { margin-bottom: 100px; text-align: center; }
+.features-h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(2.8rem, 5vw, 5.5rem);
+  font-weight: 400; line-height: 1.05;
+  letter-spacing: -0.02em; color: var(--text);
+  margin-bottom: 20px;
+}
+.features-h2 .it { font-style: italic; color: var(--accent-2); }
+.features-sub {
+  font-size: 0.85rem; color: var(--text-2);
+  line-height: 1.8; max-width: 480px; margin: 0 auto;
+  letter-spacing: 0.04em;
+}
+.features-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+  border: 1px solid var(--border);
+}
+.feat-item {
+  padding: 48px 36px;
+  border-right: 1px solid var(--border);
+  position: relative; transition: background .3s;
+}
+.feat-item:last-child { border-right: none; }
+.feat-item:hover { background: var(--accent-glow); }
+.feat-icon {
+  width: 52px; height: 52px;
+  border: 1px solid var(--border-strong);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; margin-bottom: 28px;
+  background: var(--bg-2); transition: border-color .3s, transform .3s var(--ease);
+}
+.feat-item:hover .feat-icon {
+  border-color: var(--accent-2);
+  transform: translateY(-4px);
+}
+.feat-title {
+  font-size: 0.85rem; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--text); margin-bottom: 14px;
+}
+.feat-desc {
+  font-size: 0.75rem; font-weight: 400;
+  line-height: 1.85; color: var(--text-2);
+}
+.feat-num {
+  position: absolute; top: 20px; right: 24px;
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.2rem; color: var(--border-strong);
+}
+
+/* FEATURES MARQUEE */
+.marquee-wrap {
+  overflow: hidden; margin-top: 100px;
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  padding: 20px 0;
+}
+.marquee-track {
+  display: flex; gap: 0; white-space: nowrap;
+  animation: marquee 28s linear infinite;
+}
+.marquee-item {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--text-3); padding: 0 52px;
+  border-right: 1px solid var(--border);
+  flex-shrink: 0;
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ═══════════════════════════════════
+   TESTIMONIALS
+═══════════════════════════════════ */
+#testimonials {
+  padding: 160px 0; background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+}
+.test-header { margin-bottom: 80px; }
+.test-h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(2.4rem, 4vw, 4.5rem);
+  font-weight: 400; letter-spacing: -0.02em; color: var(--text);
+  margin-bottom: 12px;
+}
+.test-h2 .it { font-style: italic; color: var(--accent-2); }
+.test-grid {
+  display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 2px;
+  align-items: start;
+}
+.test-card {
+  background: var(--surface); border: 1px solid var(--border);
+  padding: 44px 40px; position: relative;
+  transition: background .3s;
+}
+.test-card.large { padding: 52px 48px; }
+.test-card:hover { background: var(--surface-hover); }
+.test-quote-mark {
+  font-family: 'DM Serif Display', serif;
+  font-size: 4rem; line-height: 1; color: var(--border-strong);
+  margin-bottom: 24px; display: block;
+}
+.test-quote {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.2rem; font-style: italic;
+  line-height: 1.6; color: var(--text); margin-bottom: 32px;
+}
+.test-card.large .test-quote { font-size: 1.55rem; }
+.test-author {
+  display: flex; align-items: center; gap: 16px;
+}
+.test-avatar {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--bg-3); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; flex-shrink: 0;
+}
+.test-name {
+  font-size: 0.78rem; font-weight: 700;
+  color: var(--text); margin-bottom: 3px;
+}
+.test-role {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--text-3);
+}
+.test-stars {
+  position: absolute; top: 40px; right: 40px;
+  font-size: 0.75rem; letter-spacing: 0.1em; color: var(--accent-2);
+}
+.trust-bar {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  border: 1px solid var(--border); margin-top: 2px;
+}
+.trust-item {
+  padding: 28px 32px; border-right: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  transition: background .3s;
+}
+.trust-item:last-child { border-right: none; }
+.trust-item:hover { background: var(--bg-3); }
+.trust-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.9rem; font-weight: 800;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--text-3); transition: color .3s;
+}
+.trust-item:hover .trust-name { color: var(--text); }
+
+/* ═══════════════════════════════════
+   CONTACT
+═══════════════════════════════════ */
+#contact {
+  padding: 160px 0; background: var(--bg);
+}
+.contact-grid {
+  display: grid; grid-template-columns: 1fr 1.2fr; gap: 100px;
+  align-items: start;
+}
+.contact-left .section-label { margin-bottom: 32px; }
+.contact-h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(2.4rem, 4vw, 4.5rem);
+  font-weight: 400; letter-spacing: -0.02em; color: var(--text);
+  line-height: 1.1; margin-bottom: 32px;
+}
+.contact-h2 .it { font-style: italic; color: var(--accent-2); }
+.contact-body {
+  font-size: 0.85rem; font-weight: 400;
+  line-height: 2; color: var(--text-2); margin-bottom: 48px;
+}
+.contact-details {
+  display: flex; flex-direction: column; gap: 0;
+}
+.c-detail {
+  display: flex; gap: 20px; align-items: flex-start;
+  padding: 20px 0; border-bottom: 1px solid var(--border);
+}
+.c-detail-icon {
+  width: 36px; height: 36px; flex-shrink: 0;
+  background: var(--bg-2); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; margin-top: 2px;
+}
+.c-detail-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--text-3); margin-bottom: 4px;
+}
+.c-detail-value {
+  font-size: 0.82rem; color: var(--text); font-weight: 500;
+}
+.form-wrap {
+  background: var(--bg-2); border: 1px solid var(--border);
+  padding: 52px 48px;
+}
+.form-row { margin-bottom: 24px; }
+.form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--text-3); display: block; margin-bottom: 10px;
+}
+.form-input, .form-textarea, .form-select {
+  width: 100%;
+  background: var(--bg); border: 1px solid var(--border);
+  color: var(--text); font-family: 'Syne', sans-serif;
+  font-size: 0.85rem; padding: 14px 18px;
+  outline: none; transition: border-color .3s;
+  appearance: none;
+}
+.form-input:focus, .form-textarea:focus, .form-select:focus {
+  border-color: var(--accent-2);
+}
+.form-input::placeholder, .form-textarea::placeholder { color: var(--text-3); }
+.form-textarea { min-height: 120px; resize: vertical; }
+.form-submit {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--text-inv); background: var(--text);
+  border: none; padding: 18px 44px; width: 100%;
+  cursor: none; transition: opacity .3s, transform .2s var(--ease);
+  margin-top: 12px;
+}
+.form-submit:hover { opacity: 0.85; transform: translateY(-1px); }
+
+/* ═══════════════════════════════════
+   FOOTER
+═══════════════════════════════════ */
+footer {
+  background: var(--bg-2);
+  border-top: 1px solid var(--border);
+  padding: 80px 0 40px;
+}
+.footer-grid {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 60px; margin-bottom: 60px;
+}
+.f-brand-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.5rem; font-weight: 800;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--text); margin-bottom: 16px;
+}
+.f-brand-name em { font-style: normal; color: var(--accent-2); }
+.f-tagline {
+  font-size: 0.78rem; color: var(--text-2);
+  line-height: 1.8; max-width: 260px; margin-bottom: 28px;
+}
+.f-social { display: flex; gap: 10px; }
+.f-s-btn {
+  width: 36px; height: 36px;
+  background: var(--bg-3); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  text-decoration: none; font-size: 0.8rem;
+  transition: background .3s, border-color .3s;
+}
+.f-s-btn:hover { background: var(--bg-4); border-color: var(--border-strong); }
+.f-col-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--text-3); margin-bottom: 24px;
+}
+.f-links { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.f-links a {
+  font-size: 0.8rem; color: var(--text-2); text-decoration: none;
+  transition: color .3s;
+}
+.f-links a:hover { color: var(--text); }
+.footer-bottom {
+  border-top: 1px solid var(--border); padding-top: 32px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+}
+.f-copy {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--text-3);
+}
+
+/* ═══════════════════════════════════
+   MOBILE DRAWER
+═══════════════════════════════════ */
+.mobile-nav {
+  position: fixed; inset: 0; z-index: 800;
+  background: var(--bg);
+  display: flex; flex-direction: column;
+  padding: 100px 40px 60px;
+  transform: translateX(100%);
+  transition: transform .5s var(--ease);
+}
+.mobile-nav.open { transform: none; }
+.mobile-nav-links { list-style: none; display: flex; flex-direction: column; gap: 28px; flex: 1; }
+.mobile-nav-links a {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2.4rem; font-style: italic;
+  color: var(--text); text-decoration: none;
+  transition: color .3s;
+}
+.mobile-nav-links a:hover { color: var(--accent-2); }
+
+/* ═══════════════════════════════════
+   KEYFRAMES
+═══════════════════════════════════ */
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(32px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ═══════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════ */
+@media (max-width: 1024px) {
+  nav { padding: 24px 32px; }
+  nav.stuck { padding: 16px 32px; }
+  .nav-center { display: none; }
+  .nav-menu { display: flex; }
+  .w { padding: 0 32px; }
+  .about-grid { grid-template-columns: 1fr; gap: 60px; }
+  .services-grid { grid-template-columns: 1fr 1fr; }
+  .service-card.featured { grid-column: span 1; display: flex; flex-direction: column; }
+  .featured-visual { height: 180px; }
+  .features-grid { grid-template-columns: repeat(2, 1fr); }
+  .test-grid { grid-template-columns: 1fr; }
+  .contact-grid { grid-template-columns: 1fr; gap: 60px; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+  .hero-stat-bar { display: none; }
+}
+@media (max-width: 640px) {
+  .services-grid { grid-template-columns: 1fr; }
+  .features-grid { grid-template-columns: 1fr; }
+  .about-right { grid-template-columns: 1fr; }
+  .form-row-2 { grid-template-columns: 1fr; }
+  .trust-bar { grid-template-columns: repeat(2, 1fr); }
+  .footer-grid { grid-template-columns: 1fr; }
+  .hero-actions { flex-direction: column; align-items: center; }
+  .btn-hero-primary, .btn-hero-ghost { width: 100%; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="c-dot" id="cDot"></div>
+<div class="c-ring" id="cRing"></div>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <ul class="mobile-nav-links">
+    <li><a href="#about" onclick="closeMob()">About</a></li>
+    <li><a href="#services" onclick="closeMob()">Services</a></li>
+    <li><a href="#features" onclick="closeMob()">Features</a></li>
+    <li><a href="#testimonials" onclick="closeMob()">Clients</a></li>
+    <li><a href="#contact" onclick="closeMob()">Contact</a></li>
+  </ul>
+  <a href="#contact" class="btn-hero-primary" style="align-self:flex-start;margin-top:40px;" onclick="closeMob()">Get Started</a>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">NEX<em>US</em></a>
+  <ul class="nav-center">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#testimonials">Clients</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"></button>
+    <a href="#contact" class="nav-btn">Get Started</a>
+    <button class="nav-menu" id="menuBtn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-particles" id="particles"></div>
+
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Engineering the Future — Since 2020</div>
+    <h1 class="hero-h1">
+      Build What<br>
+      <span class="outline">Doesn't</span><br>
+      <span class="italic">Exist Yet</span>
+    </h1>
+    <p class="hero-sub">Systems-level thinking. Relentless execution. Technology that reshapes industries.</p>
+    <div class="hero-actions">
+      <a href="#services" class="btn-hero-primary">Explore Our Work</a>
+      <a href="#about" class="btn-hero-ghost">Our Mission</a>
+    </div>
+  </div>
+
+  <div class="hero-scroll-hint">
+    <span class="scroll-label">Scroll</span>
+    <div class="scroll-bar"></div>
+  </div>
+
+  <div class="hero-stat-bar">
+    <div class="h-stat">
+      <span class="h-stat-num">$2.4B</span>
+      <span class="h-stat-label">Capital Deployed</span>
+    </div>
+    <div class="h-stat">
+      <span class="h-stat-num">140+</span>
+      <span class="h-stat-label">Ventures Launched</span>
+    </div>
+    <div class="h-stat">
+      <span class="h-stat-num">18</span>
+      <span class="h-stat-label">Countries Operational</span>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="w">
+    <div class="about-grid">
+      <div class="reveal-l">
+        <div class="section-label">Our Mission</div>
+        <h2 class="about-kicker">
+          We don't<br>improve things.<br>We <span class="it">reinvent</span> them.
+        </h2>
+        <p class="about-body">NEXUS operates at the intersection of <strong>deep technology and systems design</strong>. We build for the problems that matter — the ones everyone else calls unsolvable.</p>
+        <p class="about-body">From autonomous infrastructure to human-computer symbiosis, our portfolio spans every dimension of <strong>what comes next</strong>. Not iteration. Transformation.</p>
+        <a href="#services" class="about-link">Explore our portfolio →</a>
+      </div>
+      <div class="about-right reveal-r">
+        <div class="about-tile delay-1">
+          <span class="tile-num">01</span>
+          <div class="tile-title">First Principles</div>
+          <div class="tile-desc">We deconstruct every problem to its fundamental physics before building up from scratch.</div>
+        </div>
+        <div class="about-tile delay-2">
+          <span class="tile-num">02</span>
+          <div class="tile-title">Radical Speed</div>
+          <div class="tile-desc">We compress decade-long roadmaps into 18-month sprints without sacrificing depth.</div>
+        </div>
+        <div class="about-tile delay-3">
+          <span class="tile-num">03</span>
+          <div class="tile-title">10× by Default</div>
+          <div class="tile-desc">Incremental improvement is a rounding error. We target an order-of-magnitude advantage.</div>
+        </div>
+        <div class="about-tile delay-4">
+          <span class="tile-num">04</span>
+          <div class="tile-title">Civilizational Scale</div>
+          <div class="tile-desc">Every project we take is evaluated against one question: does this matter in 100 years?</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="w">
+    <div class="services-header reveal">
+      <div>
+        <div class="section-label">What We Build</div>
+        <h2 class="services-h2">
+          Our<br><span class="it">Ventures</span>
+        </h2>
+      </div>
+      <p class="services-sub">Six domains. One operating philosophy. Infinite leverage.</p>
+    </div>
+
+    <div class="services-grid">
+      <div class="service-card featured reveal">
+        <div>
+          <span class="s-num">01</span>
+          <span class="s-tag">Flagship</span>
+          <div class="s-title">Autonomous Infrastructure</div>
+          <p class="s-desc">Self-healing networks, AI-managed supply chains, and autonomous logistics systems that operate at machine speed with human-level judgment. The backbone of the next economy.</p>
+          <a href="#" class="s-link">Learn more →</a>
+        </div>
+        <div class="featured-visual">🏗️</div>
+      </div>
+      <div class="service-card reveal delay-1">
+        <span class="s-num">02</span>
+        <span class="s-tag">Deep Tech</span>
+        <div class="s-title">Neural Interface Systems</div>
+        <p class="s-desc">Brain-computer integration for enterprise productivity, medical rehabilitation, and human augmentation. The next input device is the mind itself.</p>
+        <a href="#" class="s-link">Learn more →</a>
+      </div>
+      <div class="service-card reveal delay-1">
+        <span class="s-num">03</span>
+        <span class="s-tag">Energy</span>
+        <div class="s-title">Zero-Point Energy Grid</div>
+        <p class="s-desc">Distributed energy architecture that turns every structure into a generation node. Utility companies are the next industry we make obsolete.</p>
+        <a href="#" class="s-link">Learn more →</a>
+      </div>
+      <div class="service-card reveal delay-2">
+        <span class="s-num">04</span>
+        <span class="s-tag">Space</span>
+        <div class="s-title">Orbital Compute</div>
+        <p class="s-desc">Low-earth orbit server infrastructure providing edge computing at planetary scale. Latency measured in microseconds. Uptime measured in nines.</p>
+        <a href="#" class="s-link">Learn more →</a>
+      </div>
+      <div class="service-card reveal delay-2">
+        <span class="s-num">05</span>
+        <span class="s-tag">Transport</span>
+        <div class="s-title">Sub-Surface Mobility</div>
+        <p class="s-desc">Hypervelocity underground transit for dense urban corridors. We tunnel faster and cheaper than any government has ever managed.</p>
+        <a href="#" class="s-link">Learn more →</a>
+      </div>
+      <div class="service-card reveal delay-3">
+        <span class="s-num">06</span>
+        <span class="s-tag">AI</span>
+        <div class="s-title">Sovereign AI Systems</div>
+        <p class="s-desc">Purpose-built AI models for mission-critical industries. Healthcare diagnostics, financial risk, defense logistics. AI that can be trusted.</p>
+        <a href="#" class="s-link">Learn more →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="w">
+    <div class="features-header reveal">
+      <div class="section-label" style="justify-content:center; margin-bottom: 20px;">Why NEXUS</div>
+      <h2 class="features-h2">Built for the<br><span class="it">Impossible</span></h2>
+      <p class="features-sub">Every principle, process, and decision is optimized for a single outcome: building what no one thought could exist.</p>
+    </div>
+
+    <div class="features-grid reveal">
+      <div class="feat-item delay-1">
+        <div class="feat-num">01</div>
+        <div class="feat-icon">⚡</div>
+        <div class="feat-title">Velocity First</div>
+        <div class="feat-desc">We prototype in weeks, not quarters. Our build-measure-learn cycle runs 12× faster than traditional R&D pipelines.</div>
+      </div>
+      <div class="feat-item delay-2">
+        <div class="feat-num">02</div>
+        <div class="feat-icon">🔬</div>
+        <div class="feat-title">Physics-Based Design</div>
+        <div class="feat-desc">No arbitrary constraints. Every specification is grounded in the hard limits of physics, not the soft limits of convention.</div>
+      </div>
+      <div class="feat-item delay-3">
+        <div class="feat-num">03</div>
+        <div class="feat-icon">🌐</div>
+        <div class="feat-title">Planetary Deployment</div>
+        <div class="feat-desc">Our infrastructure is designed from day one to scale across geographies, jurisdictions, and conditions.</div>
+      </div>
+      <div class="feat-item delay-4">
+        <div class="feat-num">04</div>
+        <div class="feat-icon">🛡️</div>
+        <div class="feat-title">Mission-Grade Reliability</div>
+        <div class="feat-desc">Six-sigma quality processes borrowed from aerospace and applied to every vertical we operate in.</div>
+      </div>
+    </div>
+
+    <!-- MARQUEE -->
+    <div class="marquee-wrap reveal">
+      <div class="marquee-track">
+        <span class="marquee-item">Autonomous Systems</span>
+        <span class="marquee-item">Neural Interfaces</span>
+        <span class="marquee-item">Orbital Infrastructure</span>
+        <span class="marquee-item">Zero-Emission Energy</span>
+        <span class="marquee-item">Sub-Surface Transit</span>
+        <span class="marquee-item">Sovereign AI</span>
+        <span class="marquee-item">Deep Technology</span>
+        <span class="marquee-item">First Principles</span>
+        <span class="marquee-item">Autonomous Systems</span>
+        <span class="marquee-item">Neural Interfaces</span>
+        <span class="marquee-item">Orbital Infrastructure</span>
+        <span class="marquee-item">Zero-Emission Energy</span>
+        <span class="marquee-item">Sub-Surface Transit</span>
+        <span class="marquee-item">Sovereign AI</span>
+        <span class="marquee-item">Deep Technology</span>
+        <span class="marquee-item">First Principles</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="w">
+    <div class="test-header reveal">
+      <div class="section-label">Client Trust</div>
+      <h2 class="test-h2">Words from<br><span class="it">visionaries</span></h2>
+    </div>
+
+    <div class="test-grid">
+      <div class="test-card large reveal">
+        <span class="test-quote-mark">"</span>
+        <p class="test-quote">NEXUS didn't just deliver a product. They showed us a version of our industry that we didn't know was possible. We restructured our entire 10-year roadmap around what we learned from them.</p>
+        <div class="test-author">
+          <div class="test-avatar">👤</div>
+          <div>
+            <div class="test-name">Dr. Amara Osei</div>
+            <div class="test-role">CTO — Meridian Aerospace</div>
+          </div>
+        </div>
+        <div class="test-stars">★★★★★</div>
+      </div>
+      <div class="test-card reveal delay-1">
+        <span class="test-quote-mark">"</span>
+        <p class="test-quote">The autonomous grid system NEXUS built cut our operational costs by 68% in the first year. The ROI was surreal.</p>
+        <div class="test-author">
+          <div class="test-avatar">👤</div>
+          <div>
+            <div class="test-name">Marcus Thiel</div>
+            <div class="test-role">CEO — Vantage Energy</div>
+          </div>
+        </div>
+        <div class="test-stars">★★★★★</div>
+      </div>
+      <div class="test-card reveal delay-2">
+        <span class="test-quote-mark">"</span>
+        <p class="test-quote">I've worked with every major tech consultancy. Nobody thinks at the systems level NEXUS operates at. They are in a different category entirely.</p>
+        <div class="test-author">
+          <div class="test-avatar">👤</div>
+          <div>
+            <div class="test-name">Yuki Tanaka</div>
+            <div class="test-role">President — Helix Robotics</div>
+          </div>
+        </div>
+        <div class="test-stars">★★★★★</div>
+      </div>
+    </div>
+
+    <div class="trust-bar reveal">
+      <div class="trust-item"><span class="trust-name">Meridian</span></div>
+      <div class="trust-item"><span class="trust-name">Vantage</span></div>
+      <div class="trust-item"><span class="trust-name">Helix</span></div>
+      <div class="trust-item"><span class="trust-name">Orion Labs</span></div>
+      <div class="trust-item"><span class="trust-name">Axiom Co.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="w">
+    <div class="contact-grid">
+      <div class="reveal-l">
+        <div class="section-label">Contact</div>
+        <h2 class="contact-h2">
+          Start a<br><span class="it">conversation</span><br>with us.
+        </h2>
+        <p class="contact-body">Whether you're looking to fund something audacious, build something impossible, or simply understand what's actually coming — we want to hear from you.</p>
+        <div class="contact-details">
+          <div class="c-detail">
+            <div class="c-detail-icon">📍</div>
+            <div>
+              <div class="c-detail-label">Headquarters</div>
+              <div class="c-detail-value">3400 Innovation Blvd, Austin, TX 78701</div>
+            </div>
+          </div>
+          <div class="c-detail">
+            <div class="c-detail-icon">✉️</div>
+            <div>
+              <div class="c-detail-label">Email</div>
+              <div class="c-detail-value">hello@nexus.io</div>
+            </div>
+          </div>
+          <div class="c-detail">
+            <div class="c-detail-icon">🌐</div>
+            <div>
+              <div class="c-detail-label">Global Offices</div>
+              <div class="c-detail-value">London · Singapore · São Paulo · Dubai</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal-r">
+        <div class="form-wrap">
+          <div class="form-row form-row-2">
+            <div>
+              <label class="form-label">First Name</label>
+              <input class="form-input" type="text" placeholder="John">
+            </div>
+            <div>
+              <label class="form-label">Last Name</label>
+              <input class="form-input" type="text" placeholder="Doe">
+            </div>
+          </div>
+          <div class="form-row">
+            <label class="form-label">Email Address</label>
+            <input class="form-input" type="email" placeholder="john@company.com">
+          </div>
+          <div class="form-row">
+            <label class="form-label">Company</label>
+            <input class="form-input" type="text" placeholder="Your Organization">
+          </div>
+          <div class="form-row">
+            <label class="form-label">Inquiry Type</label>
+            <select class="form-select form-input">
+              <option value="" style="background:var(--bg);">Select a topic</option>
+              <option style="background:var(--bg);">Partnership</option>
+              <option style="background:var(--bg);">Investment</option>
+              <option style="background:var(--bg);">Technology Licensing</option>
+              <option style="background:var(--bg);">Press / Media</option>
+              <option style="background:var(--bg);">Other</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label class="form-label">Message</label>
+            <textarea class="form-textarea" placeholder="Tell us about your vision..."></textarea>
+          </div>
+          <button class="form-submit" onclick="handleSubmit(this)">Send Message</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="w">
+    <div class="footer-grid">
+      <div>
+        <div class="f-brand-name">NEX<em>US</em></div>
+        <p class="f-tagline">Engineering what comes next. Operating across six deep-technology verticals with a single operating philosophy.</p>
+        <div class="f-social">
+          <a href="#" class="f-s-btn">𝕏</a>
+          <a href="#" class="f-s-btn">in</a>
+          <a href="#" class="f-s-btn">gh</a>
+          <a href="#" class="f-s-btn">▶</a>
+        </div>
+      </div>
+      <div>
+        <div class="f-col-title">Company</div>
+        <ul class="f-links">
+          <li><a href="#">About</a></li>
+          <li><a href="#">Mission</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press</a></li>
+          <li><a href="#">Investors</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="f-col-title">Ventures</div>
+        <ul class="f-links">
+          <li><a href="#">Autonomous Infra</a></li>
+          <li><a href="#">Neural Systems</a></li>
+          <li><a href="#">Energy Grid</a></li>
+          <li><a href="#">Orbital Compute</a></li>
+          <li><a href="#">Sovereign AI</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="f-col-title">Resources</div>
+        <ul class="f-links">
+          <li><a href="#">Research</a></li>
+          <li><a href="#">Documentation</a></li>
+          <li><a href="#">Case Studies</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="f-copy">© 2024 NEXUS Systems Inc. — All rights reserved</span>
+      <div style="display:flex;gap:24px;">
+        <a href="#" style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-3);text-decoration:none;">Privacy</a>
+        <a href="#" style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-3);text-decoration:none;">Terms</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── Cursor
+const dot = document.getElementById('cDot');
+const ring = document.getElementById('cRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; dot.style.cssText += `left:${mx}px;top:${my}px;`; });
+(function animate() {
+  rx += (mx - rx) * 0.13; ry += (my - ry) * 0.13;
+  ring.style.cssText += `left:${rx}px;top:${ry}px;`;
+  requestAnimationFrame(animate);
+})();
+
+// ── Nav sticky
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => { nav.classList.toggle('stuck', scrollY > 60); });
+
+// ── Theme toggle
+const root = document.documentElement;
+document.getElementById('themeToggle').addEventListener('click', () => {
+  root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+});
+
+// ── Mobile nav
+const mobileNav = document.getElementById('mobileNav');
+const menuBtn = document.getElementById('menuBtn');
+let open = false;
+menuBtn.addEventListener('click', () => {
+  open = !open;
+  mobileNav.classList.toggle('open', open);
+  const spans = menuBtn.querySelectorAll('span');
+  if (open) {
+    spans[0].style.transform = 'rotate(45deg) translate(4px, 4px)';
+    spans[1].style.opacity = '0';
+    spans[2].style.transform = 'rotate(-45deg) translate(4px, -4px)';
+  } else {
+    spans.forEach(s => { s.style.transform = ''; s.style.opacity = ''; });
+  }
+});
+function closeMob() {
+  open = false; mobileNav.classList.remove('open');
+  menuBtn.querySelectorAll('span').forEach(s => { s.style.transform = ''; s.style.opacity = ''; });
+}
+
+// ── Scroll reveal
+const revealEls = document.querySelectorAll('.reveal, .reveal-l, .reveal-r');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+revealEls.forEach(el => obs.observe(el));
+
+// ── Particles
+const pWrap = document.getElementById('particles');
+for (let i = 0; i < 36; i++) {
+  const p = document.createElement('div');
+  p.className = 'particle';
+  const x = Math.random() * 100;
+  const y = 20 + Math.random() * 70;
+  const dur = 6 + Math.random() * 8;
+  const delay = Math.random() * 8;
+  const dx = (Math.random() - 0.5) * 60;
+  const op = 0.2 + Math.random() * 0.5;
+  p.style.cssText = `left:${x}%;top:${y}%;--dur:${dur}s;--delay:${delay}s;--dx:${dx}px;--op:${op};width:${1+Math.random()*2}px;height:${1+Math.random()*2}px;`;
+  pWrap.appendChild(p);
+}
+
+// ── Form submit
+function handleSubmit(btn) {
+  const orig = btn.textContent;
+  btn.textContent = 'Sending...';
+  btn.style.opacity = '0.6';
+  setTimeout(() => {
+    btn.textContent = '✓ Message Sent';
+    btn.style.opacity = '1';
+    setTimeout(() => { btn.textContent = orig; btn.style.opacity = '1'; }, 3000);
+  }, 1600);
+}
+
+// ── Smooth anchor scroll
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const id = a.getAttribute('href');
+    if (id === '#') return;
+    const el = document.querySelector(id);
+    if (el) { e.preventDefault(); el.scrollIntoView({ behavior: 'smooth' }); }
+  });
+});
+</script>
+</body>
+</html>
